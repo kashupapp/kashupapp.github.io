@@ -419,6 +419,50 @@ body.ini-on .sheet-h .back{min-width:44px;padding:0;font-size:26px;line-height:1
 .btn,.big-op,.opts button,.chips button,.tabs2 button,.seg button,.mes button,.ref,.del,.addmini{transition:transform .12s ease, background-color .2s ease, color .2s ease}
 .btn:active,.big-op:active,.opts button:active,.chips button:active,.tabs2 button:active,.mes button:active,.ref:active,.del:active,.addmini:active{transform:scale(.96)}
 @media (prefers-reduced-motion:reduce){#app.anim *,#app.anim > *,#cfg:not([hidden]),#cfgBody.anim > *{animation:none!important}.btn:active,.big-op:active,.opts button:active{transform:none}}
+
+
+/* ---------- Pantalla de ingreso ---------- */
+body.login header{display:none}
+body.login{background:radial-gradient(110% 80% at 100% 0%,color-mix(in srgb,var(--brand2) 90%,transparent),transparent 60%),
+  radial-gradient(80% 60% at 0% 100%,color-mix(in srgb,var(--accent) 28%,transparent),transparent 65%),
+  linear-gradient(165deg,var(--brand),color-mix(in srgb,var(--brand) 80%,#000));background-attachment:fixed;min-height:100vh}
+body.login::before{content:"";position:fixed;inset:0;pointer-events:none;
+  background:repeating-radial-gradient(circle at 108% -12%,transparent 0 30px,rgba(255,255,255,.06) 30px 31.5px),
+             repeating-radial-gradient(circle at -12% 115%,transparent 0 34px,rgba(255,255,255,.045) 34px 35.5px)}
+body.login main{margin-top:0!important;min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:calc(24px + env(safe-area-inset-top)) 16px 24px}
+.login-box{width:100%;max-width:400px;animation:entra .5s cubic-bezier(.2,.8,.2,1)}
+.login-logo{display:flex;align-items:center;justify-content:center;gap:10px;color:#fff;font-weight:800;font-size:26px;letter-spacing:-.6px;margin-bottom:20px}
+.login-logo svg{width:44px;height:44px;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.25)} .login-logo em{font-style:normal;color:var(--on-brand2)}
+.login-card{background:var(--card);border-radius:24px;padding:26px 22px 18px;box-shadow:0 30px 60px -24px rgba(0,0,0,.55)}
+.login-card h2{font-size:22px;letter-spacing:-.4px}
+.login-sub{color:var(--ink2);font-size:15px;margin:4px 0 6px}
+.login-card .lbl{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin:14px 0 6px}
+.login-card .btn{margin-top:16px;min-height:52px;font-size:16px}
+.login-card .btn:disabled{opacity:.7}
+.pass{position:relative}.pass .txt{padding-right:74px}
+.pass button{position:absolute;right:6px;top:6px;height:36px;padding:0 12px;border-radius:9px;font-size:13px;font-weight:600;color:var(--accent);background:var(--track)}
+.recordar{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:15px;color:var(--ink);cursor:pointer}
+.recordar input{width:20px;height:20px;accent-color:var(--btn)}
+.login-msg{margin-top:12px;padding:10px 12px;border-radius:12px;font-size:14px;background:color-mix(in srgb,var(--btn) 12%,transparent);color:var(--ink)}
+.login-msg.err{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad)}
+.login-link{display:block;width:100%;margin-top:10px;padding:10px;font-size:14px;font-weight:600;color:var(--accent);text-align:center}
+.login-pie{text-align:center;margin-top:16px;font-size:14px;color:var(--on-brand2)}
+.login-pie a{color:#fff;font-weight:700}
+/* ---------- Vista computadora (⚙ General → Vista) ---------- */
+html.pc .wrap{max-width:none}
+html.pc header{padding-left:max(28px,calc((100vw - 1180px) / 2 + 28px));padding-right:max(28px,calc((100vw - 1180px) / 2 + 28px))}
+html.pc main{max-width:1180px;margin-left:auto;margin-right:auto;padding:0 20px}
+html.pc .sheet-b{max-width:760px;margin-left:auto;margin-right:auto}
+html.pc body.dash #app{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+html.pc body.dash #app > *{margin-bottom:0}
+html.pc body.dash #app > .hero,html.pc body.dash #app > .trio,html.pc body.dash #app > .foot{grid-column:1/-1}
+html.pc body.ini-on #app{max-width:900px}
+html.pc body.ini-on #app .big-op{display:inline-flex;width:calc(50% - 8px);vertical-align:top}
+html.pc body.ini-on #app .big-op + .big-op{margin-left:16px}
+html.pc body.ini-on .mes,html.pc body.ini-on .top{max-width:900px;margin-left:auto;margin-right:auto}
+html.pc body.reg-on #app{max-width:640px;margin-left:auto;margin-right:auto}
+html.pc .savebar .btn{max-width:608px}
+html.pc .ok-card{min-width:300px}
 @media (prefers-reduced-motion:reduce){.ref.busy svg{animation:none}.toast{transition:none}}
 </style>
 </head>
@@ -475,9 +519,23 @@ var API = window.KASHUP_API || '';   /* viene de ../config.js (script central de
   var VERSION = '2.0';
   /* Cada app guarda su memoria aparte (tu app y la de tu hermana comparten dominio) */
   var MEM = 'kashup:' + (location.pathname.split('/')[1]||'') + (DEMO ? ':prueba' : '') + ':';
+  /* "Recordarme en este equipo": si está apagado, la llave y los datos solo duran mientras el navegador siga abierto */
+  var RECORDAR = true; try{ RECORDAR = localStorage.getItem(MEM+'recordar') !== '0'; }catch(e){}
+  var SESION = {clave:1, datos:1, cola:1};
   var D = null, loadedAt = 0, KEY = DEMO ? 'demo' : leerClave(), cargando = false;
-  function guardar(k,v){ try{ localStorage.setItem(MEM+k,v) }catch(e){} }
-  function leer(k){ try{ return localStorage.getItem(MEM+k) }catch(e){ return null } }
+  function guardar(k,v){
+    try{
+      if(SESION[k] && !RECORDAR){ sessionStorage.setItem(MEM+k, v); localStorage.removeItem(MEM+k); }
+      else localStorage.setItem(MEM+k, v);
+    }catch(e){}
+  }
+  function leer(k){
+    try{ return (SESION[k] && sessionStorage.getItem(MEM+k)) || localStorage.getItem(MEM+k); }catch(e){ return null }
+  }
+  function recordar(si){
+    RECORDAR = !!si;
+    try{ localStorage.setItem(MEM+'recordar', si ? '1' : '0'); }catch(e){}
+  }
   // La clave viaja en el link después de #k= (esa parte nunca sale de tu iPhone)
   /* El link personal trae la clave (k) y, si es de otra persona, su Apps Script (s):
      .../finanzas/#k=CLAVE&s=ID_DEL_APPS_SCRIPT   (todo eso se queda en el equipo, nunca viaja a GitHub) */
@@ -529,6 +587,7 @@ var API = window.KASHUP_API || '';   /* viene de ../config.js (script central de
     });
     if(['inicio','ultima','mes','anio'].indexOf(p.inicio)<0) p.inicio = 'inicio';
     if(['auto','claro','oscuro'].indexOf(p.tema)<0) p.tema = 'auto';
+    if(['auto','celular','pc'].indexOf(p.pantalla)<0) p.pantalla = 'auto';
     if(['verde','rosa','lila','vino'].indexOf(p.color)<0) p.color = 'verde';
     p.centavos = p.centavos===0 ? 0 : 1;
     p.horas = p.horas===0 ? 0 : 1;
@@ -537,7 +596,14 @@ var API = window.KASHUP_API || '';   /* viene de ../config.js (script central de
   }
   function guardarPrefs(){ guardar('prefs', JSON.stringify(P)); aplicarPrefs(); }
   var fmt, fmt0 = new Intl.NumberFormat('es-PE',{maximumFractionDigits:0});
+  /* Vista computadora: automática según el ancho de la pantalla, o fija si la persona la elige */
+  function aplicarPantalla(){
+    var pc = P.pantalla==='pc' || (P.pantalla==='auto' && window.innerWidth >= 1000);
+    document.documentElement.classList.toggle('pc', pc);
+  }
+  window.addEventListener('resize', function(){ if(P.pantalla==='auto') aplicarPantalla(); });
   function aplicarPrefs(){
+    aplicarPantalla();
     var r = document.documentElement;
     if(P.tema==='claro') r.setAttribute('data-theme','light');
     else if(P.tema==='oscuro') r.setAttribute('data-theme','dark');
@@ -549,7 +615,8 @@ var API = window.KASHUP_API || '';   /* viene de ../config.js (script central de
     fmt = new Intl.NumberFormat('es-PE',{minimumFractionDigits:P.centavos?2:0,maximumFractionDigits:P.centavos?2:0});
   }
   aplicarPrefs();
-  (function(){ var o = leerLink(location.hash); if(o.n){ P.nombre = o.n.slice(0,30); guardar('prefs', JSON.stringify(P)); } })();
+  (function(){ var o = leerLink(location.hash); if(o.n){ P.nombre = o.n.slice(0,30); guardar('prefs', JSON.stringify(P)); }
+    if(o.k) try{ history.replaceState(null, '', location.pathname + location.search); }catch(e){} })();
 
   var now = new Date();
   var sel = now.getFullYear()*12 + now.getMonth();   // mes elegido
@@ -637,6 +704,7 @@ var API = window.KASHUP_API || '';   /* viene de ../config.js (script central de
   }
 
   function render(){
+    document.body.classList.remove('login');
     if(!D) return;
     now = new Date();
     var cfg = D.cfg, movs = D.movs;
@@ -647,6 +715,7 @@ var API = window.KASHUP_API || '';   /* viene de ../config.js (script central de
     $('saldoBox').hidden = vista==='inicio'; $('marca').hidden = vista!=='inicio'; $('ref').hidden = vista==='inicio';
     document.body.classList.toggle('ini-on', vista==='inicio');
     document.body.classList.toggle('reg-on', vista==='registrar');
+    document.body.classList.toggle('dash', vista==='mes' || vista==='anio');
     pintarSaldo();
     var h = vista==='inicio' ? vistaInicio(cfg, movs) : vista==='registrar' ? vistaRegistrar(cfg, movs) : vista==='anio' ? vistaAnio(cfg, movs) : vistaMes(cfg, movs);
     var g = new Date(D.gen);
@@ -1024,7 +1093,7 @@ var API = window.KASHUP_API || '';   /* viene de ../config.js (script central de
     reporte:   ['Reporte', 'Qué gráficos y datos ver, y en qué orden'],
     registros: ['Registros', 'Categorías, métodos de pago y frecuentes'],
     saldo:     ['Saldo de apertura', 'Con cuánto empezaste y desde qué fecha'],
-    general:   ['General', 'Tu nombre, pantalla de inicio, tema y colores'],
+    general:   ['General', 'Tu nombre, inicio, vista, tema y colores'],
     datos:     ['Datos', 'Actualizar, tu link personal y la clave']
   };
   function renderCfg(){
@@ -1051,6 +1120,8 @@ var API = window.KASHUP_API || '';   /* viene de ../config.js (script central de
       h += seccion('Tu nombre', '<div class="tiny" style="margin:-6px 0 8px">Para saludarte al abrir la app.</div>'
         + '<input class="txt" id="cfgNombre" maxlength="30" autocomplete="off" placeholder="Ej. China" value="'+esc(P.nombre)+'">');
       h += seccion('Al abrir la app', chips('inicio', [['inicio','Inicio'],['ultima','Última vista'],['mes','Mes'],['anio','Año']]));
+      h += seccion('Vista', '<div class="tiny" style="margin:-6px 0 8px">Cómo se acomoda la app. En automática, en la computadora se ve en dos columnas y en el celular en una.</div>'
+        + chips('pantalla', [['auto','Automática'],['celular','Celular'],['pc','Computadora']]));
       h += seccion('Apariencia', '<div class="tiny" style="margin:-6px 0 8px">Tema</div>' + chips('tema', [['auto','Automático'],['claro','Claro'],['oscuro','Oscuro']])
         + '<div class="tiny" style="margin:12px 0 8px">Color</div>' + chips('color', [['verde','<i class="dot" style="background:#1F7A63"></i>Verde'],['rosa','<i class="dot" style="background:#F2A7C1"></i>Rosa'],['lila','<i class="dot" style="background:#B9A3EC"></i>Lila'],['vino','<i class="dot" style="background:#7A2233"></i>Vino']])
         + '<div class="tiny" style="margin:8px 0 4px">El logo de la app cambia al instante. El ícono del celular toma este color al instalar la app; si ya la tienes instalada, quítala y vuelve a instalarla para ver el nuevo.</div>'
@@ -1064,7 +1135,7 @@ var API = window.KASHUP_API || '';   /* viene de ../config.js (script central de
         + '<button class="btn" data-act="refresh">Actualizar ahora</button>'
         + (!DEMO && KEY ? '<button class="btn sec" data-act="copylink">Copiar mi link personal</button>' : '')
         + '<button class="btn sec" data-act="reset">'+(confirmar==='reset'?'Toca otra vez para restablecer':'Restablecer configuración')+'</button>'
-        + '<button class="btn sec danger" data-act="logout">'+(confirmar==='logout'?'Toca otra vez para olvidar la clave':'Olvidar mi clave en este equipo')+'</button>');
+        + '<button class="btn sec danger" data-act="logout">'+(confirmar==='logout'?'Toca otra vez para cerrar sesión':'Cerrar sesión en este equipo')+'</button>');
     }
     else if(cfgPage==='saldo'){
       h += D ? bloqueSaldo(D.cfg) : '<div class="load">Primero carga tus datos.</div>';
@@ -1209,15 +1280,79 @@ var API = window.KASHUP_API || '';   /* viene de ../config.js (script central de
 
   function toast(t){var el=$('toast'); el.textContent=t; el.classList.add('on'); setTimeout(function(){el.classList.remove('on')},2200)}
 
+  /* ---------- PANTALLA DE INGRESO ---------- */
+  var LOGIN = {modo:'entrar', correo:'', msg:'', err:false, ver:false};
   function pedirClave(msg){
-    $('app').innerHTML = '<section class="card key"><h2>Entra a tu KashUp</h2><label>'+msg+'</label>'
-      + '<input id="kIn" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Pega aquí tu clave o tu link personal">'
-      + '<button data-act="setkey">Entrar</button></section>'
-      + '<section class="card key"><h2>¿Perdiste tu link?</h2><label>Escribe tu correo y te enviamos uno nuevo.</label>'
-      + '<input id="rIn" type="email" inputmode="email" autocomplete="email" placeholder="tucorreo@gmail.com">'
-      + '<button data-act="recuperar">Enviarme mi link</button></section>'
-      + '<p class="foot">¿Aún no tienes cuenta? <a href="../" style="color:var(--accent);font-weight:600">Créala gratis</a></p>';
+    if(msg && /no es correcta|no es válida/i.test(msg)){ LOGIN.msg = 'Tu llave guardada ya no funciona. Ingresa de nuevo.'; LOGIN.err = true; }
+    try{ LOGIN.correo = LOGIN.correo || leer('correo') || ''; }catch(e){}
+    pintarLogin();
   }
+  function pintarLogin(){
+    document.body.classList.add('login');
+    var ent = LOGIN.modo==='entrar';
+    var logo = '<div class="login-logo"><svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112" style="fill:var(--btn)"/><g fill="none" stroke="#fff" stroke-width="46" stroke-linecap="round" stroke-linejoin="round"><path d="M178 132 V380"/><path d="M178 286 L338 126"/><path d="M258 126 H338 V206"/><path d="M246 248 L338 380"/></g></svg><span>Kash<em>Up</em></span></div>';
+    var aviso = LOGIN.msg ? '<div class="login-msg'+(LOGIN.err?' err':'')+'" role="status">'+esc(LOGIN.msg)+'</div>' : '';
+    var h = ent
+      ? '<h2>Bienvenido de vuelta</h2><p class="login-sub">Ingresa tu correo y tu llave de acceso.</p>' + aviso
+        + '<form id="fLogin" novalidate>'
+        + '<label class="lbl" for="lgCorreo">Correo</label><input class="txt" id="lgCorreo" type="email" inputmode="email" autocomplete="username" placeholder="tucorreo@gmail.com" value="'+esc(LOGIN.correo)+'">'
+        + '<label class="lbl" for="lgLlave">Llave de acceso</label><div class="pass"><input class="txt" id="lgLlave" type="'+(LOGIN.ver?'text':'password')+'" autocomplete="current-password" autocapitalize="off" spellcheck="false" placeholder="La llave de tu correo de KashUp">'
+        + '<button type="button" data-act="verllave" aria-label="'+(LOGIN.ver?'Ocultar':'Mostrar')+' llave">'+(LOGIN.ver?'Ocultar':'Ver')+'</button></div>'
+        + '<label class="recordar"><input type="checkbox" id="lgRecordar"'+(RECORDAR?' checked':'')+'> Recordarme en este equipo</label>'
+        + '<button class="btn" id="lgBtn" type="submit">Entrar</button></form>'
+        + '<button class="login-link" data-act="loginmodo" data-m="recuperar">¿Olvidaste tu llave?</button>'
+      : '<h2>Recupera tu llave</h2><p class="login-sub">Escribe tu correo y te enviamos un link nuevo con tu llave.</p>' + aviso
+        + '<form id="fRecuperar" novalidate><label class="lbl" for="rIn">Correo</label><input class="txt" id="rIn" type="email" inputmode="email" autocomplete="email" placeholder="tucorreo@gmail.com" value="'+esc(LOGIN.correo)+'">'
+        + '<button class="btn" id="rBtn" type="submit">Enviarme mi llave</button></form>'
+        + '<button class="login-link" data-act="loginmodo" data-m="entrar">← Volver a entrar</button>';
+    $('app').innerHTML = '<div class="login-box">' + logo + '<section class="login-card">' + h + '</section>'
+      + '<p class="login-pie">¿Aún no tienes cuenta? <a href="../#registro">Créala gratis</a></p></div>';
+    var f = $(ent ? 'lgCorreo' : 'rIn'); if(f && !f.value) f.focus();
+  }
+  function llaveDe(txt){
+    txt = String(txt||'').trim();
+    var o = txt.indexOf('k=')>-1 ? leerLink(txt) : {k: txt.replace(/[^A-Za-z0-9]/g,'')};
+    return o.k || '';
+  }
+  document.addEventListener('submit', function(e){
+    if(e.target.id==='fLogin'){
+      e.preventDefault();
+      var correo = $('lgCorreo').value.trim(), k = llaveDe($('lgLlave').value), btn = $('lgBtn');
+      LOGIN.correo = correo;
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)){ LOGIN.msg = 'Escribe tu correo completo.'; LOGIN.err = true; return pintarLogin(); }
+      if(k.length < 20){ LOGIN.msg = 'Pega la llave que te llegó al correo.'; LOGIN.err = true; return pintarLogin(); }
+      var rec = $('lgRecordar').checked;
+      btn.disabled = true; btn.textContent = 'Entrando…';
+      fetch(API, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({a:'entrar', correo:correo, k:k}), redirect:'follow'})
+        .then(function(r){ return r.json(); })
+        .then(function(j){
+          if(j.error){ LOGIN.msg = j.detalle || 'Correo o llave incorrectos.'; LOGIN.err = true; return pintarLogin(); }
+          recordar(rec);
+          KEY = k; guardar('clave', k); guardar('datos', ''); guardar('correo', correo); D = null;
+          if(j.nombre && !P.nombre){ P.nombre = String(j.nombre).slice(0,30); guardar('prefs', JSON.stringify(P)); }
+          LOGIN.msg = ''; LOGIN.err = false;
+          document.body.classList.remove('login');
+          $('app').innerHTML = '<div class="sk"></div><div class="sk"></div>'; refresh(true);
+        })
+        .catch(function(){ LOGIN.msg = 'Sin conexión. Inténtalo otra vez.'; LOGIN.err = true; pintarLogin(); });
+    }
+    else if(e.target.id==='fRecuperar'){
+      e.preventDefault();
+      var c = $('rIn').value.trim(), b = $('rBtn');
+      LOGIN.correo = c;
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(c)){ LOGIN.msg = 'Escribe tu correo completo.'; LOGIN.err = true; return pintarLogin(); }
+      b.disabled = true; b.textContent = 'Enviando…';
+      fetch(API, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({a:'recuperar', correo:c}), redirect:'follow'})
+        .then(function(r){ return r.json(); })
+        .then(function(j){
+          LOGIN.err = !!j.error;
+          LOGIN.msg = j.error ? (j.detalle || 'No se pudo enviar.') : 'Listo. Si ese correo tiene cuenta, te llegó tu llave nueva (revisa también Spam).';
+          if(!j.error) LOGIN.modo = 'entrar';
+          pintarLogin();
+        })
+        .catch(function(){ LOGIN.msg = 'Sin conexión. Inténtalo otra vez.'; LOGIN.err = true; pintarLogin(); });
+    }
+  });
 
   function refresh(silencioso, forzar){
     if(DEMO){
@@ -1383,18 +1518,12 @@ var API = window.KASHUP_API || '';   /* viene de ../config.js (script central de
     }
     else if(a==='logout'){
       if(confirmar!=='logout'){ confirmar='logout'; renderCfg(); return; }
-      guardar('clave',''); guardar('script',''); guardar('datos',''); KEY=null; D=null; history.replaceState(null,'',location.pathname);
-      cerrarCfg(); pedirClave('Ábrela desde el botón de tu correo de KashUp, o pega aquí tu link.');
+      guardar('clave',''); guardar('script',''); guardar('datos',''); guardar('cola',''); KEY=null; D=null; history.replaceState(null,'',location.pathname);
+      try{ sessionStorage.removeItem(MEM+'clave'); sessionStorage.removeItem(MEM+'datos'); }catch(e){}
+      cerrarCfg(); LOGIN.modo='entrar'; LOGIN.msg='Cerraste sesión en este equipo.'; LOGIN.err=false; pedirClave();
     }
-    else if(a==='recuperar'){
-      var correo = ($('rIn').value||'').trim();
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)) return toast('Escribe tu correo completo');
-      el.disabled = true; el.textContent = 'Enviando…';
-      fetch(API, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({a:'recuperar', correo:correo}), redirect:'follow'})
-        .then(function(r){ return r.json(); })
-        .then(function(j){ el.disabled = false; el.textContent = 'Enviarme mi link'; toast(j.error ? (j.detalle||'No se pudo enviar') : 'Listo: revisa tu correo (y Spam)'); })
-        .catch(function(){ el.disabled = false; el.textContent = 'Enviarme mi link'; toast('Sin conexión. Inténtalo otra vez.'); });
-    }
+    else if(a==='loginmodo'){ LOGIN.modo = el.getAttribute('data-m'); LOGIN.msg = ''; LOGIN.err = false; pintarLogin(); }
+    else if(a==='verllave'){ var v = $('lgLlave').value, c = $('lgCorreo').value; LOGIN.ver = !LOGIN.ver; LOGIN.correo = c; pintarLogin(); $('lgLlave').value = v; }
     else if(a==='setkey'){
       var txt = ($('kIn').value||'').trim(), o = txt.indexOf('k=')>-1 ? leerLink(txt) : {k: txt.replace(/[^A-Za-z0-9]/g,'')};
       if(o.k){
