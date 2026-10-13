@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#103B38">
+<meta name="description" content="KashUp: registra tus gastos en segundos y mira a dónde se va tu dinero. Gratis.">
+<title>KashUp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ---------- Colores (mismas paletas que la app) ---------- */
+:root{
+  --bg:#F3F6F4; --card:#FFFFFF; --ink:#14302D; --ink2:#55665F; --ink3:#86958F; --line:#DCE4E0; --track:#E4EBE7;
+  --brand:#103B38; --brand2:#174C47; --on-brand:#FFFFFF; --on-brand2:#A9CBBF;
+  --accent:#1F7A63; --btn:#1F7A63; --glow:#7FD8B6; --gold:#E3A72F; --exp:#eb6834; --inc:#1baf7a;
+  --shadow:0 18px 50px -20px rgba(16,59,56,.35);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1311; --card:#141E1B; --ink:#EAF1EE; --ink2:#AFC1BA; --ink3:#7D8F89; --line:#25322E; --track:#22302B;
+    --brand:#0A2825; --brand2:#123632; --on-brand2:#8FB8AA; --accent:#34A585; --btn:#1F7A63;
+    --shadow:0 18px 50px -20px rgba(0,0,0,.6);
+  }
+}
+:root[data-color="rosa"]{ --brand:#7A2D4D; --brand2:#93395E; --on-brand2:#F6C6D8; --accent:#C24D7A; --btn:#C2507C; --glow:#F6B3CB; }
+:root[data-color="lila"]{ --brand:#3A2A6B; --brand2:#4A378A; --on-brand2:#D2C6F5; --accent:#7356BE; --btn:#7A5CC4; --glow:#C9B9F7; }
+:root[data-color="vino"]{ --brand:#5A1522; --brand2:#73202F; --on-brand2:#F3C969; --accent:#8A2A3B; --btn:#7A2233; --glow:#F3C969; }
+@media (prefers-color-scheme:dark){
+  :root[data-color="rosa"]:not([data-theme="light"]){ --accent:#F29BBB; }
+  :root[data-color="lila"]:not([data-theme="light"]){ --accent:#B39CF0; }
+  :root[data-color="vino"]:not([data-theme="light"]){ --accent:#E8909F; }
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--brand)}
+body{font:16px/1.5 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;transition:background-color .5s}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* ---------- Logo ---------- */
+.logo{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.6px;text-decoration:none;color:var(--on-brand)}
+.logo svg{width:38px;height:38px;flex:none}
+.logo em{font-style:normal;color:var(--glow);transition:color .5s}
+.logo rect{fill:var(--btn);transition:fill .5s}
+.logo path{fill:none;stroke:#fff;stroke-width:46;stroke-linecap:round;stroke-linejoin:round}
+.logo.draw path{stroke-dasharray:1;stroke-dashoffset:1;animation:trazo .7s cubic-bezier(.6,0,.3,1) forwards}
+.logo.draw path:nth-child(2){animation-delay:.25s}.logo.draw path:nth-child(3){animation-delay:.5s}.logo.draw path:nth-child(4){animation-delay:.38s}
+@keyframes trazo{to{stroke-dashoffset:0}}
+
+/* ---------- Encabezado / hero ---------- */
+.hero{position:relative;isolation:isolate;overflow:hidden;color:var(--on-brand);
+  background:
+    radial-gradient(110% 80% at 100% 0%, color-mix(in srgb,var(--brand2) 90%,transparent) 0%, transparent 60%),
+    radial-gradient(80% 60% at 0% 100%, color-mix(in srgb,var(--accent) 30%,transparent) 0%, transparent 65%),
+    linear-gradient(165deg,var(--brand),color-mix(in srgb,var(--brand) 82%,#000));
+  padding:calc(18px + env(safe-area-inset-top)) 0 120px;transition:background .6s}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:repeating-radial-gradient(circle at 108% -12%,transparent 0 30px,rgba(255,255,255,.06) 30px 31.5px),
+             repeating-radial-gradient(circle at -12% 115%,transparent 0 34px,rgba(255,255,255,.045) 34px 35.5px)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.nav .entrar{font-size:15px;font-weight:600;text-decoration:none;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(6px);transition:background .2s}
+.nav .entrar:hover{background:rgba(255,255,255,.18)}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;margin-top:56px}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:var(--on-brand2)}
+.pill i{width:7px;height:7px;border-radius:50%;background:var(--glow);box-shadow:0 0 0 0 var(--glow);animation:late 2s infinite}
+@keyframes late{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--glow) 70%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
+h1{font-size:clamp(38px,6.4vw,64px);line-height:1.02;letter-spacing:-2px;font-weight:800;margin:18px 0 16px}
+h1 .sube{display:inline-block;color:var(--glow);transition:color .5s}
+h1 .sube svg{width:.62em;height:.62em;vertical-align:.02em;margin-left:.06em;animation:flota 2.4s ease-in-out infinite}
+@keyframes flota{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.lead{font-size:18px;color:var(--on-brand2);max-width:30em}
+.ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;
+  border-radius:14px;border:0;cursor:pointer;font-weight:700;font-size:16px;text-decoration:none;transition:transform .15s,box-shadow .2s,background .5s}
+.btn:active{transform:scale(.97)}
+.btn-main{background:#fff;color:var(--brand);box-shadow:0 10px 30px -10px rgba(0,0,0,.45)}
+.btn-main::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);transform:skewX(-20deg);animation:brillo 3.5s 1.5s infinite}
+@keyframes brillo{0%{left:-60%}35%,100%{left:130%}}
+.btn-ghost{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.3)}
+.btn-ghost:hover{background:rgba(255,255,255,.08)}
+.mini-trust{display:flex;gap:18px;flex-wrap:wrap;margin-top:22px;font-size:14px;color:var(--on-brand2)}
+.mini-trust span{display:inline-flex;align-items:center;gap:6px}
+.mini-trust svg{width:16px;height:16px;color:var(--glow)}
+
+/* ---------- Celular de muestra ---------- */
+.phone-zone{position:relative;display:grid;place-items:center;min-height:520px}
+.phone{position:relative;width:270px;height:540px;border-radius:44px;padding:12px;background:#0d1110;
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.6),inset 0 0 0 2px rgba(255,255,255,.08);animation:flota2 6s ease-in-out infinite}
+@keyframes flota2{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(-1deg)}}
+.screen{position:relative;height:100%;border-radius:34px;overflow:hidden;background:var(--bg);color:var(--ink);transition:background .5s}
+.s-top{background:linear-gradient(165deg,var(--brand),color-mix(in srgb,var(--brand) 80%,#000));color:#fff;padding:30px 16px 46px;transition:background .5s}
+.s-top small{font-size:10px;color:var(--on-brand2)} .s-top b{display:block;font-size:20px;letter-spacing:-.5px}
+.s-card{background:var(--card);border-radius:16px;margin:-34px 12px 10px;padding:12px;box-shadow:0 8px 20px -12px rgba(0,0,0,.35);transition:background .5s}
+.s-card small{font-size:10px;color:var(--ink2)} .s-card .big{font-size:26px;font-weight:800;letter-spacing:-1px}
+.s-bar{height:8px;border-radius:4px;background:var(--track);margin-top:8px;overflow:hidden}
+.s-bar i{display:block;height:100%;width:0;border-radius:4px;background:var(--accent);transition:width 1.2s cubic-bezier(.2,.8,.2,1),background .5s}
+.s-list{background:var(--card);border-radius:16px;margin:0 12px;padding:6px 12px;transition:background .5s}
+.s-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:12px}
+.s-row:first-child{border-top:0}
+.s-row .ic{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:13px;background:var(--track)}
+.s-row .n{flex:1} .s-row .n small{display:block;font-size:10px;color:var(--ink3)}
+.s-row .m{font-weight:700} .s-row .m.in{color:var(--inc)}
+.s-ok{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(.7);opacity:0;width:190px;padding:16px;border-radius:18px;
+  background:var(--card);text-align:center;box-shadow:0 20px 40px -12px rgba(0,0,0,.4);pointer-events:none}
+.s-ok .c{width:44px;height:44px;margin:0 auto 8px;border-radius:50%;background:var(--btn);display:grid;place-items:center}
+.s-ok .c svg{width:24px;height:24px}
+.s-ok b{font-size:14px} .s-ok small{display:block;font-size:11px;color:var(--ink2)}
+.s-ok.on{animation:okpop 1.6s cubic-bezier(.2,.9,.3,1.25) forwards}
+@keyframes okpop{0%{opacity:0;transform:translate(-50%,-40%) scale(.7)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.04)}28%{transform:translate(-50%,-50%) scale(1)}
+  80%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-52%) scale(.95)}}
+.chip{position:absolute;display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:14px;font-size:13px;font-weight:700;
+  background:var(--card);color:var(--ink);box-shadow:0 16px 36px -14px rgba(0,0,0,.45);animation:flota 4s ease-in-out infinite;transition:background .5s}
+.chip small{display:block;font-size:11px;font-weight:500;color:var(--ink3)}
+.chip .d{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:14px}
+.chip.a{left:-58px;top:262px}.chip.a .d{background:var(--inc)}
+.chip.b{right:-54px;bottom:46px;animation-delay:1.2s}.chip.b .d{background:var(--exp)}
+
+/* ---------- Secciones ---------- */
+section{padding:84px 0}
+.overlap{margin-top:-70px;padding-top:0;position:relative;z-index:2}
+.k{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);transition:color .5s}
+h2{font-size:clamp(28px,4.4vw,42px);line-height:1.1;letter-spacing:-1.2px;font-weight:800;margin:10px 0 12px}
+.sub{color:var(--ink2);font-size:17px;max-width:34em}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:36px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:var(--shadow);
+  transition:transform .25s,box-shadow .25s,background .5s,border-color .5s}
+.card:hover{transform:translateY(-4px)}
+.card .ico{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;margin-bottom:14px;
+  background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);transition:all .5s}
+.card .ico svg{width:24px;height:24px}
+.card h3{font-size:18px;letter-spacing:-.3px;margin-bottom:6px}
+.card p{font-size:15px;color:var(--ink2)}
+.colores{display:flex;gap:8px;margin-top:14px}
+.colores button{width:30px;height:30px;border-radius:50%;border:3px solid var(--card);cursor:pointer;box-shadow:0 0 0 1px var(--line);transition:transform .2s,box-shadow .2s}
+.colores button:hover{transform:scale(1.12)}
+.colores button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--ink)}
+
+.pasos{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px;counter-reset:p}
+.paso{position:relative;padding:26px 22px 22px;border-radius:22px;background:var(--card);border:1px solid var(--line);transition:background .5s,border-color .5s}
+.paso .num{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:var(--btn);margin-bottom:14px;transition:background .5s}
+.paso h3{font-size:18px;margin-bottom:4px} .paso p{color:var(--ink2);font-size:15px}
+
+/* ---------- Registro ---------- */
+.reg{display:grid;grid-template-columns:.9fr 1.1fr;gap:32px;align-items:center}
+.form-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:28px;box-shadow:var(--shadow);overflow:hidden;transition:background .5s,border-color .5s}
+.form-card::before{content:"";position:absolute;inset:-2px;z-index:0;border-radius:inherit;pointer-events:none;
+  background:conic-gradient(from var(--ang,0deg),transparent 0 70%,color-mix(in srgb,var(--accent) 55%,transparent) 85%,transparent);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;padding:2px;animation:giro 6s linear infinite}
+@property --ang{syntax:"<angle>";initial-value:0deg;inherits:false}
+@keyframes giro{to{--ang:360deg}}
+.form-card > *{position:relative;z-index:1}
+.form-card h3{font-size:22px;letter-spacing:-.5px}
+.form-card .tiny{font-size:14px;color:var(--ink2);margin:4px 0 18px}
+label{display:block;font-size:14px;font-weight:600;margin:14px 0 6px}
+input[type=text],input[type=email]{width:100%;height:52px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);padding:0 16px;font-size:16px;
+  transition:border-color .2s,box-shadow .2s,background .5s}
+input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
+input[aria-invalid="true"]{border-color:#C2334A}
+.err{color:#C2334A;font-size:13px;min-height:18px;margin-top:4px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink2);margin:14px 0 4px;font-weight:400}
+.check input{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);flex:none}
+.btn-full{width:100%;background:var(--btn);color:#fff;margin-top:14px;box-shadow:0 12px 26px -12px color-mix(in srgb,var(--btn) 80%,#000)}
+.btn-full[disabled]{opacity:.75;cursor:wait}
+.spin{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:gira .8s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+.listo{text-align:center;padding:12px 4px}
+.sobre{width:96px;height:96px;margin:4px auto 16px;border-radius:28px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 14%,transparent);animation:salta .8s cubic-bezier(.2,.9,.3,1.4)}
+.sobre svg{width:52px;height:52px;color:var(--accent)}
+.sobre .tapa{transform-origin:50% 30%;animation:abre .6s .5s ease-out both}
+@keyframes salta{0%{transform:scale(.3);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes abre{from{transform:scaleY(1)}to{transform:scaleY(-1)}}
+.listo h3{font-size:24px} .listo p{color:var(--ink2);margin-top:6px}
+.listo .mail{display:inline-block;margin-top:10px;padding:6px 12px;border-radius:999px;background:var(--track);font-weight:600;font-size:14px}
+.confeti{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
+.confeti i{position:absolute;top:-12px;width:8px;height:14px;border-radius:2px;opacity:0;animation:cae 1.6s ease-in forwards}
+@keyframes cae{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(420px) rotate(540deg)}}
+
+footer{background:var(--brand);color:var(--on-brand2);padding:36px 0 calc(36px + env(safe-area-inset-bottom));transition:background .5s}
+footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px}
+
+/* ---------- Aparición al hacer scroll ---------- */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
+.rv.in{opacity:1;transform:none}
+.hero .rv{transition-duration:.8s}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+/* ---------- Celular / pantallas chicas ---------- */
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:10px;margin-top:36px}
+  .phone-zone{min-height:500px;margin-top:10px}
+  .grid{grid-template-columns:1fr 1fr}
+  .pasos{grid-template-columns:1fr}
+  .reg{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .wrap{padding:0 16px}
+  .grid{grid-template-columns:1fr}
+  .lead{font-size:17px}
+  .btn{width:100%}
+  .chip.a{left:-30px}.chip.b{right:-26px}.chip{padding:8px 11px;font-size:12px}
+  section{padding:64px 0}
+  .form-card{padding:22px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv{opacity:1;transform:none}
+  .logo.draw path{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <nav class="nav">
+      <a class="logo draw" href="#" aria-label="KashUp, inicio">
+        <svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112"/>
+          <path pathLength="1" d="M178 132 V380"/><path pathLength="1" d="M178 286 L338 126"/><path pathLength="1" d="M258 126 H338 V206"/><path pathLength="1" d="M246 248 L338 380"/></svg>
+        <span>Kash<em>Up</em></span>
+      </a>
+      <a class="entrar" href="app/">Entrar</a>
+    </nav>
+
+    <div class="hero-grid">
+      <div>
+        <span class="pill rv"><i></i>Gratis · Hecho en Perú</span>
+        <h1 class="rv d1">Tu plata, clara y <span class="sube">hacia arriba<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg></span></h1>
+        <p class="lead rv d2">Registra un gasto en dos toques y mira, mes a mes, a dónde se va tu dinero y cuánto te queda de tu presupuesto.</p>
+        <div class="ctas rv d3">
+          <a class="btn btn-main" href="#registro">Crear mi cuenta gratis</a>
+          <a class="btn btn-ghost" href="#como">Ver cómo funciona</a>
+        </div>
+        <div class="mini-trust rv d4">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Sin tarjeta</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Se instala en tu celular</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>En soles</span>
+        </div>
+      </div>
+
+      <div class="phone-zone rv d2" aria-hidden="true">
+        <div class="phone">
+          <div class="screen">
+            <div class="s-top"><small>Saldo actual</small><b id="pSaldo">S/ 0.00</b></div>
+            <div class="s-card"><small>Te queda de tu presupuesto</small><div class="big" id="pQueda">S/ 0</div><div class="s-bar"><i id="pBar"></i></div></div>
+            <div class="s-list" id="pList">
+              <div class="s-row"><span class="ic">🍔</span><span class="n">Comida<small>Hoy · Yape</small></span><span class="m">− S/ 12.50</span></div>
+              <div class="s-row"><span class="ic">🚌</span><span class="n">Pasaje ida<small>Hoy · Efectivo</small></span><span class="m">− S/ 2.50</span></div>
+              <div class="s-row"><span class="ic">💼</span><span class="n">Sueldo<small>Ayer · Cuenta</small></span><span class="m in">+ S/ 2,400</span></div>
+              <div class="s-row"><span class="ic">💡</span><span class="n">Luz<small>Lun · Débito</small></span><span class="m">− S/ 81.90</span></div>
+            </div>
+            <div class="s-ok" id="pOk"><div class="c"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><b>¡Gasto registrado!</b><small id="pOkTxt">S/ 12.50 · Comida</small></div>
+          </div>
+          <div class="chip a"><span class="d">↑</span><span>+ S/ 2,400<small>Sueldo</small></span></div>
+          <div class="chip b"><span class="d">↓</span><span>− S/ 12.50<small>Comida</small></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="overlap">
+    <div class="wrap">
+      <div class="grid">
+        <article class="card rv">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></div>
+          <h3>Registra en segundos</h3><p>Monto, categoría y listo. Tus gastos de siempre quedan como frecuentes: un toque y guardado.</p>
+        </article>
+        <article class="card rv d1">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <h3>Presupuesto por mes</h3><p>Pon un límite a cada categoría y mira cuánto te queda. Si lo cambias, los meses pasados no se tocan.</p>
+        </article>
+        <article class="card rv d2">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+          <h3>Reportes claros</h3><p>Mes a mes, por categoría y por día. Entiendes tu plata de un vistazo, sin fórmulas.</p>
+        </article>
+        <article class="card rv d3">
+          <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2"/><circle cx="17.5" cy="10.5" r="2"/><circle cx="8.5" cy="7.5" r="2"/><path d="M12 22a10 10 0 1 1 10-10c0 2-1.5 3-3 3h-2a2 2 0 0 0-1.5 3.3A2 2 0 0 1 12 22z"/></svg></div>
+          <h3>A tu estilo</h3><p>Elige tu color. Pruébalo aquí:</p>
+          <div class="colores" role="group" aria-label="Color de la página">
+            <button data-c="verde" aria-label="Verde" aria-pressed="true" style="background:#1F7A63"></button>
+            <button data-c="rosa" aria-label="Rosa" aria-pressed="false" style="background:#E58FB0"></button>
+            <button data-c="lila" aria-label="Lila" aria-pressed="false" style="background:#9C83E0"></button>
+            <button data-c="vino" aria-label="Vino" aria-pressed="false" style="background:#7A2233"></button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="como">
+    <div class="wrap">
+      <div class="k rv">Cómo funciona</div>
+      <h2 class="rv d1">Empiezas en menos de un minuto</h2>
+      <p class="sub rv d2">No descargas nada raro ni llenas formularios eternos.</p>
+      <div class="pasos">
+        <div class="paso rv"><div class="num">1</div><h3>Crea tu cuenta</h3><p>Solo tu nombre y tu correo.</p></div>
+        <div class="paso rv d1"><div class="num">2</div><h3>Revisa tu correo</h3><p>Te llega tu link personal de KashUp, ya listo con tus categorías.</p></div>
+        <div class="paso rv d2"><div class="num">3</div><h3>Instálala en tu celular</h3><p>Ábrela, toca “Instalar” o “Agregar a inicio” y la tienes como una app más.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="registro">
+    <div class="wrap reg">
+      <div>
+        <div class="k rv">Gratis</div>
+        <h2 class="rv d1">Crea tu cuenta KashUp</h2>
+        <p class="sub rv d2">Te enviaremos a tu correo el link de tu app. Guárdalo: es tu llave para entrar desde cualquier celular.</p>
+        <p class="sub rv d3" style="font-size:15px;margin-top:10px">¿Ya tienes cuenta? <a href="app/" style="color:var(--accent);font-weight:700">Entra aquí</a></p>
+      </div>
+      <div class="form-card rv d2" id="formCard">
+        <form id="f" novalidate>
+          <h3>Tus datos</h3>
+          <p class="tiny">Toma menos de un minuto.</p>
+          <label for="nombre">¿Cómo te llamas?</label>
+          <input type="text" id="nombre" name="nombre" autocomplete="given-name" placeholder="Ej. Ana" maxlength="30" required>
+          <div class="err" id="eNombre"></div>
+          <label for="correo">Tu correo</label>
+          <input type="email" id="correo" name="correo" autocomplete="email" inputmode="email" placeholder="tucorreo@gmail.com" maxlength="80" required>
+          <div class="err" id="eCorreo"></div>
+          <label class="check"><input type="checkbox" id="acepto"> Acepto que KashUp guarde mis registros para mostrarme mis reportes.</label>
+          <div class="err" id="eAcepto"></div>
+          <button class="btn btn-full" id="enviar" type="submit">Crear mi cuenta</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="logo" href="#" aria-label="KashUp">
+      <svg viewBox="0 0 512 512" aria-hidden="true"><rect width="512" height="512" rx="112"/><path d="M178 132 V380"/><path d="M178 286 L338 126"/><path d="M258 126 H338 V206"/><path d="M246 248 L338 380"/></svg>
+      <span>Kash<em>Up</em></span>
+    </a>
+    <span>© 2026 KashUp · Hecho en Perú</span>
+  </div>
+</footer>
+
+<script src="config.js"></script>
+<script>
+(function(){
+  /* URL del script central (está en config.js). Si falta, la página funciona en modo demostración. */
+  var API_REGISTRO = (window.KASHUP_API && window.KASHUP_API.indexOf('/exec') > -1) ? window.KASHUP_API : '';
+  var QUIETO = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function(id){ return document.getElementById(id); };
+  var fmt = new Intl.NumberFormat('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  /* Aparición al hacer scroll */
+  var io = 'IntersectionObserver' in window ? new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:.15, rootMargin:'0px 0px -40px 0px'}) : null;
+  document.querySelectorAll('.rv').forEach(function(el){ io ? io.observe(el) : el.classList.add('in'); });
+  requestAnimationFrame(function(){ document.querySelectorAll('.hero .rv').forEach(function(el){ el.classList.add('in'); }); });
+
+  /* Números que cuentan */
+  function contar(el, hasta, ms, dec){
+    if(QUIETO){ el.textContent = 'S/ '+(dec?fmt.format(hasta):Math.round(hasta).toLocaleString('es-PE')); return; }
+    var t0 = 0;
+    (function paso(t){
+      if(!t0) t0 = t;
+      var p = Math.min(1,(t-t0)/ms), v = hasta*(1-Math.pow(1-p,3));
+      el.textContent = 'S/ '+(dec?fmt.format(v):Math.round(v).toLocaleString('es-PE'));
+      if(p<1) requestAnimationFrame(paso);
+    })(performance.now());
+  }
+
+  /* Celular de muestra: arranca animado y "registra" gastos cada pocos segundos */
+  var saldo = 8105.95, queda = 235, demo = [['S/ 12.50 · Comida',12.5],['S/ 2.50 · Transporte',2.5],['S/ 18.90 · Supermercado',18.9]], i = 0;
+  setTimeout(function(){ contar($('pSaldo'), saldo, 1200, true); contar($('pQueda'), queda, 1200, false); $('pBar').style.width = '67%'; }, 500);
+  function registrarDemo(){
+    var d = demo[i++ % demo.length], ok = $('pOk');
+    $('pOkTxt').textContent = d[0];
+    ok.classList.remove('on'); void ok.offsetWidth; ok.classList.add('on');
+    saldo -= d[1]; queda = Math.max(0, queda - d[1]);
+    setTimeout(function(){ $('pSaldo').textContent = 'S/ '+fmt.format(saldo); $('pQueda').textContent = 'S/ '+Math.round(queda); $('pBar').style.width = Math.min(96, 67 + i*4)+'%'; }, 500);
+  }
+  if(!QUIETO) setInterval(registrarDemo, 4200);
+
+  /* Elegir color: cambia toda la página */
+  document.querySelectorAll('.colores button').forEach(function(b){
+    b.addEventListener('click', function(){
+      var c = b.getAttribute('data-c');
+      if(c==='verde') document.documentElement.removeAttribute('data-color'); else document.documentElement.setAttribute('data-color', c);
+      document.querySelectorAll('.colores button').forEach(function(x){ x.setAttribute('aria-pressed', x===b); });
+      var mt = document.querySelector('meta[name="theme-color"]');
+      mt.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--brand').trim());
+    });
+  });
+
+  /* Registro */
+  function marcar(id, msg){ $(id).setAttribute('aria-invalid', msg ? 'true' : 'false'); $('e'+id.charAt(0).toUpperCase()+id.slice(1)).textContent = msg || ''; }
+  $('f').addEventListener('submit', function(e){
+    e.preventDefault();
+    var nombre = $('nombre').value.trim(), correo = $('correo').value.trim(), ok = true;
+    if(nombre.length < 2){ marcar('nombre','Escribe tu nombre.'); ok = false; } else marcar('nombre','');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(correo)){ marcar('correo','Revisa tu correo, parece incompleto.'); ok = false; } else marcar('correo','');
+    if(!$('acepto').checked){ $('eAcepto').textContent = 'Marca la casilla para continuar.'; ok = false; } else $('eAcepto').textContent = '';
+    if(!ok){ var p = document.querySelector('[aria-invalid="true"]') || $('acepto'); p.focus(); return; }
+
+    var btn = $('enviar'); btn.disabled = true; btn.innerHTML = '<span class="spin" aria-hidden="true"></span> Creando tu KashUp…';
+    var fin = function(err){
+      if(err){ btn.disabled = false; btn.textContent = 'Crear mi cuenta'; $('eAcepto').textContent = err; return; }
+      exito(nombre, correo);
+    };
+    if(!API_REGISTRO){ setTimeout(function(){ fin(); }, 1400); return; }   // modo demostración
+    fetch(API_REGISTRO, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify({a:'registro', nombre:nombre, correo:correo}), redirect:'follow'})
+      .then(function(r){ return r.json(); })
+      .then(function(j){ fin(j.error ? (j.detalle || 'No se pudo crear tu cuenta. Inténtalo de nuevo.') : null); })
+      .catch(function(){ fin('Sin conexión. Inténtalo de nuevo.'); });
+  });
+
+  function exito(nombre, correo){
+    var card = $('formCard'), esc = function(s){ return s.replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+    card.innerHTML = '<div class="listo" role="status">'
+      + '<div class="sobre"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><rect x="6" y="12" width="36" height="26" rx="4"/><path class="tapa" d="M6 15l18 13 18-13"/></svg></div>'
+      + '<h3>¡Listo, '+esc(nombre)+'!</h3>'
+      + '<p>Te enviamos tu link de KashUp a</p><span class="mail">'+esc(correo)+'</span>'
+      + '<p style="margin-top:14px;font-size:14px">¿No lo ves? Revisa <b>Spam</b> o <b>Promociones</b>.</p>'
+      + (API_REGISTRO ? '' : '<p style="margin-top:10px;font-size:12px;color:var(--ink3)">Modo demostración: todavía no se envía ningún correo.</p>')
+      + '</div>';
+    if(!QUIETO){
+      var cf = document.createElement('div'); cf.className = 'confeti'; cf.setAttribute('aria-hidden','true');
+      var cols = ['var(--accent)','var(--glow)','var(--gold)','var(--btn)'];
+      for(var k=0;k<36;k++){ var it = document.createElement('i'); it.style.left = (Math.random()*100)+'%'; it.style.background = cols[k%4]; it.style.animationDelay = (Math.random()*.5)+'s'; cf.appendChild(it); }
+      card.appendChild(cf); setTimeout(function(){ cf.remove(); }, 2400);
+    }
+  }
+})();
+</script>
+</body>
+</html>
